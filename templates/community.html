@@ -1,0 +1,76 @@
+<%inherit file="base.html"/>
+<div class="article_content" style="background: #fff none repeat scroll 0 0;position: absolute;right: 0;min-height: 100%;margin:0px 0px 0px 200px;">
+    %if article["page_count"] != 0:
+        %for i in article["items"]:
+            % if i.checked == 1:
+            <article class="article_list" style="width:90%; padding-top:1.5px; padding-bottom:15px">
+            <div class="mata" style="color: #555;float: right;font-size: 1em;line-height: 2;position: relative;text-align: right;width: auto;">
+                <div class="date">
+                    <time>${i.publish_time|h}</time>
+                </div>
+            </div>
+            <h1 class="title" style="color: #333;font-size: 2em;font-weight: 300;line-height: 35px;margin-bottom: 25px;"><a style="color: #333;" href="/spider/${i.key|h}">${i.header|h}</a></h1>
+            <div class="contemt" style="color: #444;font-family: Arial,"Hiragino Sans GB",冬青黑,"Microsoft YaHei",微软雅黑,SimSun,宋体,Helvetica,Tahoma,"Arial sans-serif";font-size: 16px;line-height: 1.8;word-wrap: break-word;">
+                <p style="font-size: 20px;">${i.describe|h}</p>
+                <p class="color: #2479cc;"><a href="/spider/${i.key|h}">继续阅读 &raquo;</a></p>
+            </div>
+            <hr>
+            </article>
+            %endif
+        %endfor
+        <nav style="text-align:center;">
+          <ul class="pagination">
+            %if article["first_page"] is not None:
+                <li>
+                    <a href="?cur_page=${article["first_page"]}">${article["first_page"]}</a>
+                </li>
+            %endif
+            %if article["prev_page"] is None:
+                <li class="disabled">
+                    <a href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            %else:
+                <li>
+                    <a href="?cur_page=${article["prev_page"]}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            % endif
+    
+            %for i in article["page_numbers"]:
+                %if i == article["cur_page"]:
+                    <li class="active"><a href="?cur_page=${i}">${i}</a></li>
+                %else:
+                    <li><a href="?cur_page=${i}">${i}</a></li>
+                %endif
+            %endfor
+            % if article["next_page"] is None:
+                <li class="disabled">
+                    <a href="" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            %else:
+                <li>
+                    <a href="?cur_page=${article["next_page"]}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            %endif
+            %if article["last_page"] is not None:
+                <li>
+                    <a href="?cur_page=${article["last_page"]}">${article["last_page"]}</a>
+                </li>
+            %endif
+          </ul>
+        </nav>
+    %endif
+    </div>
+
+<script>
+    $(document).ready(function(e) {
+      $('#article_list').navfix(0,999);
+    });
+</script>

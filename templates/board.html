@@ -1,0 +1,107 @@
+<%inherit file="base.html" />
+
+<%block name="head">
+</%block>
+<% user = req.current_user() %>
+<div class="container">
+	<div class="page-header">
+		<h2>留言板</h2>
+		<a href="#" data-title="Title" data-content="Contents..." data-placement="right"></a>
+	</div>
+	<div>
+		<ol class="breadcrumb">
+		  <li><a href="/">首页</a></li>
+		  <li class="active"><a href="#">留言</a></li>
+		</ol>
+	</div>
+	% if words["page_count"] != 0 :
+	<div class="jumbotron">
+		<table class="table table-hover">
+			<tbody>
+			% for word in words["items"] :
+			<tr class="word-tr">
+				<th> ${ word.username|h} </th>
+				<td  style="width:50%"><div style="font-size:17px; word-break: break-all; word-wrap: break-word;">
+				%if word.foruser != "":
+					<a>@${word.foruser | h}</a>
+				%endif
+				${ word.words|h }
+				</div></td>
+				<td>${word.make_time|h}</td>
+				<td><a onclick="replyOne('${word.username|h}')"><img border="0" align="absmiddle" alt="Reply" src="${static('img/reply.png')}" ></a></td>
+				%if user is not None and user.level == 100:
+					<td>${word.IP|h}</td>
+				%endif
+				% if user is not None:
+					% if user.level == 100 or word.username == user.username:
+						<td><input class="btn btn-danger" id="${ word.key |h }" type="button" value="删除" onclick="if(confirm('确认删除？')){removeOne('/board',this)}" /></td>
+					%endif
+				%endif
+			</tr>
+			% endfor
+			</tbody>
+		</table>
+		<nav style="text-align:center;">
+                <ul class="pagination">
+                    %if words["first_page"] is not None:
+                        <li>
+                            <a href="?cur_page=${words["first_page"]}">${words["first_page"]}</a>
+                        </li>
+                    %endif
+                    %if words["prev_page"] is not None:
+                        <li>
+                            <a href="?cur_page=${words["prev_page"]}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    %else:
+                        <li class="disabled">
+                            <a href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    % endif
+            
+                    %for i in words["page_numbers"]:
+                        %if i == words["cur_page"]:
+                            <li class="active"><a href="?cur_page=${i}">${i}</a></li>
+                        %else:
+                            <li><a href="?cur_page=${i}">${i}</a></li>
+                        %endif
+                    %endfor
+                    % if words["next_page"] is not None:
+                        <li>
+                            <a href="?cur_page=${words["next_page"]}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    %else:
+                        <li class="disabled">
+                            <a href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    %endif
+                    %if words["last_page"] is not None:
+                        <li>
+                            <a href="?cur_page=${words["last_page"]}">${words["last_page"]}</a>
+                        </li>
+                    %endif
+                </ul>
+		</nav>
+	</div>
+	% endif
+</div>
+
+<div class="container">
+	<div class="jumbotron" >
+		<form id="post_words" action="board" method="post">
+			${xsrf_token}
+			<textarea id="reply_content" name="words" class="form-control" placeholder="说点什么吧" style="margin-bottom:10px; border: medium none; resize: none; outline: medium none; font-size: 15px; line-height: 150%; overflow: hidden; word-wrap: break-word; height: 107px; font-family: Verdana,Arial;"></textarea>
+			<button class="btn btn-default" type="submit">提交</button>
+		</form>
+	</div>
+</div>
+<%block name="script">
+
+</%block>

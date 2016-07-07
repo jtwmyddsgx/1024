@@ -1,0 +1,113 @@
+<%inherit file="base.html"/>
+<% user = req.current_user() %>
+% if user is not None and user.level == 100 or ar.checked == 1:
+<div class="container">
+    <div>
+        <ol class="breadcrumb">
+          <li><a href="/">首页</a></li>
+          <li class="active"><a href="#">${ar.header|h}</a></li>
+        </ol>
+    </div>
+    <div class="jumbotron" style="padding: 10px 50px 30px;">
+		<h2>${ar.header|h}</h2>
+        <p class="blog-post-meta">${ar.publish_time|h}<a href="#"> by ${ar.username|h}</a></p>
+        %if ar.code != "":
+            <pre style="font-size: 17px;">${ar.code|h}</pre>
+        %endif
+        <p>${ar.describe|h}</p>
+        <nav>
+            <ul class="pager">
+            % if next_back[0] != -1:
+                <li><a  href="/spider/${next_back[0]}">&lt;&nbsp;上一篇</a></li>
+            %endif
+            % if next_back[1] != -1:
+                <li><a  href="/spider/${next_back[1]}">下一篇&nbsp;&gt;</a></li>
+            %endif
+            </ul>
+        </nav>
+	</div>
+    <div style="10px 50px 30px;" class="jumbotron">
+        % if comment["page_count"]  != 0:
+            <div>
+                <table class="table table-hover">
+                    %for c in comment["items"]:
+                        <tr class="comment-tr">
+                            <th>${c.username|h}</th><td style="width:50%"><div style="font-size:17px; word-break: break-all; word-wrap: break-word;">
+                            %if c.foruser != "":
+                                <a>@${c.foruser|h}</a>
+                            %endif
+                            ${c.comment|h}</div></td>
+                            <td>${c.comment_time|h}</td><td><a onclick="replyOne('${c.username|h}')"><img border="0" align="absmiddle" alt="Reply" src="${static('img/reply.png')}" ></a></td>
+                            % if user is not None:
+                                % if user.level == 100 or c.username == user.username:
+                                    <td><button class="btn btn-danger" id="${ c.key |h }" onclick="if(confirm('确认删除？')){removeOne('/comment/del',this)}">删除</button></td>
+                                %endif
+                            % endif
+                        </tr>
+                    %endfor
+                </table>
+            </div>
+            <nav style="text-align:center;">
+                <ul class="pagination">
+                    %if comment["first_page"] is not None:
+                        <li>
+                            <a href="?cur_page=${comment["first_page"]}">${comment["first_page"]}</a>
+                        </li>
+                    %endif
+                    %if comment["prev_page"] is not None:
+                        <li>
+                            <a href="?cur_page=${comment["prev_page"]}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    %else:
+                        <li class="disabled">
+                            <a href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    % endif
+
+                    %for i in comment["page_numbers"]:
+                        %if i == comment["cur_page"]:
+                            <li class="active"><a href="?cur_page=${i}">${i}</a></li>
+                        %else:
+                            <li><a href="?cur_page=${i}">${i}</a></li>
+                        %endif
+                    %endfor
+                    % if comment["next_page"] is not None:
+                        <li>
+                            <a href="?cur_page=${comment["next_page"]}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    %else:
+                        <li class="disabled">
+                            <a href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    %endif
+                    %if comment["last_page"] is not None:
+                        <li>
+                            <a href="?cur_page=${comment["last_page"]}">${comment["last_page"]}</a>
+                        </li>
+                    %endif
+                </ul>
+            </nav>
+        %endif
+        <form action="/comment" method="post">
+            <textarea id="reply_content"  name="comment" class="form-control" placeholder="说点什么吧" style="margin-bottom:10px; border: medium none; resize: none; outline: medium none; font-size: 15px; line-height: 150%; overflow: auto; word-wrap: break-word; height: 107px; font-family: Verdana,Arial;"></textarea>
+            <input name="article_key" type="hidden" value=${ar.key}>
+            <input style="margin-bottom:10px;" class="btn btn-default" type="submit" value="评论">
+        </form>
+    </div>
+</div>
+% else:
+    <div class="container">
+        <div class="page-header">
+		    <h2>禁区</h2>
+	    </div>
+    </div>
+
+% endif

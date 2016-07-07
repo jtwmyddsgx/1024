@@ -1,0 +1,76 @@
+<%inherit file="base.html" />
+
+<%block name="head">
+</%block>
+<div class="container">
+    <div class="page-header">
+		<h2>天气预报</h2>
+	</div>
+    <div>
+		<ol class="breadcrumb">
+		  <li><a href="/">首页</a></li>
+		  <li class="active"><a href="#">天气预报</a></li>
+		</ol>
+	</div>
+    %if now_info != {}:
+        <div class="table-responsive">
+            <table class="table">
+                <tr class="success">
+                    <th>所在地</th>
+                    <th>今天</th>
+                    <th>更新时间</th>
+                    <th>温度</th>
+                    <th>温度差</th>
+                    <th>天气</th>
+                    <th>湿度</th>
+                    <th>降水量</th>
+                    <th>风力</th>
+                    <th>风向</th>
+                </tr>
+                <tr class="danger">
+                    <td>${now_info["所在地"]}</td>
+                    <td>${now_info["今天"]}</td>
+                    <td>${now_info["更新时间"]}</td>
+                    <td>${now_info["温度"]}</td>
+                    <td>${now_info["温度差"]}</td>
+                    <td>${now_info["天气"]}</td>
+                    <td>${now_info["湿度"]}</td>
+                    <td>${now_info["降水量"]}</td>
+                    <td>${now_info["风力"]}</td>
+                    <td>${now_info["风向"]}</td>
+                </tr>
+            </table>
+        </div>
+    %endif
+
+    %if suggest_info != {}:
+        <div class="table-responsive">
+            <h3>
+                天气指数
+            </h3>
+            <table class="table">
+                <tr class="danger">
+                    <th>感冒指数</th>
+                    <td>${suggest_info["感冒指数"]}</td>
+                </tr>
+                <tr class="success">
+                    <th>紫外线指数</th>
+                    <td>${suggest_info["紫外线指数"]}</td>
+                </tr>
+                <tr class="danger">
+                    <th>空气污染扩散指数</th>
+                    <td>${suggest_info["空气污染扩散指数"]}</td>
+                </tr>
+                <tr class="success">
+                    <th>洗车指数</th>
+                    <td>${suggest_info["洗车指数"]}</td>
+                </tr>
+                <tr class="danger">
+                    <th>运动指数</th>
+                    <td>${suggest_info["运动指数"]}</td>
+                </tr>
+            </table>
+        </div>
+    %endif
+
+</div>

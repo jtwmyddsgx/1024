@@ -1,0 +1,16 @@
+<%inherit file="base.html"/>
+
+<div class="container">
+    <input id="update" type="button" onclick="update('/proxy',this)" value="更新"><a>更新需要较长时间(约10分钟)</a>
+	<div>
+        <h3>最后更新时间：${update_time}</h3>
+        <h4>共${ips_len}个</h4>
+        <table class="table" style="width:40%">
+            %for i in ips:
+                <tr>
+                    <td>${i}</td>
+                </tr>
+            %endfor
+        </table>
+    </div>
+</div>

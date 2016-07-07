@@ -1,0 +1,152 @@
+<%inherit file="base.html" />
+
+<%block name="head">
+</%block>
+<div class="container">
+    %if observe_now_data != {}:
+        <div class="table-responsive">
+            <h3>
+                实时天气预报
+            </h3>
+            <table class="table">
+                <tr class="success">
+                    <th>所在地</th>
+                    <th>今天</th>
+                    <th>更新时间</th>
+                    <th>温度</th>
+                    <th>湿度</th>
+                    <th>降水量</th>
+                    <th>风力</th>
+                    <th>风向</th>
+                </tr>
+                <tr class="danger">
+                    <td>${observe_now_data["所在地"]}</td>
+                    <td>${observe_now_data["今天"]}</td>
+                    <td>${observe_now_data["更新时间"]}</td>
+                    <td>${observe_now_data["温度"]}</td>
+                    <td>${observe_now_data["湿度"]}</td>
+                    <td>${observe_now_data["降水量"]}</td>
+                    <td>${observe_now_data["风力"]}</td>
+                    <td>${observe_now_data["风向"]}</td>
+                </tr>
+            </table>
+        </div>
+    %endif
+
+    %if suggest_info != {}:
+        <div class="table-responsive">
+            <h3>
+                天气指数
+            </h3>
+            <table class="table">
+                <tr class="success">
+                    <th>穿衣指数</th>
+                    <td>${suggest_info["穿衣指数"]}</td>
+                </tr>
+                <tr class="danger">
+                    <th>感冒指数</th>
+                    <td>${suggest_info["感冒指数"]}</td>
+                </tr>
+                <tr class="success">
+                    <th>紫外线指数</th>
+                    <td>${suggest_info["紫外线指数"]}</td>
+                </tr>
+                <tr class="danger">
+                    <th>空气污染扩散指数</th>
+                    <td>${suggest_info["空气污染扩散指数"]}</td>
+                </tr>
+                <tr class="success">
+                    <th>洗车指数</th>
+                    <td>${suggest_info["洗车指数"]}</td>
+                </tr>
+                <tr class="danger">
+                    <th>运动指数</th>
+                    <td>${suggest_info["运动指数"]}</td>
+                </tr>
+            </table>
+        </div>
+    %endif
+
+    %if observe_now_data != {}:
+        <div class="table-responsive">
+            <h3>
+                详细天气预报
+            </h3>
+            <table class="table">
+                <tr class="success">
+                    <th>温度</th>
+                    <th>天气</th>
+                    <th>风力</th>
+                    <th>风向</th>
+                </tr>
+                <tr class="danger">
+                    <td>${weather_info["温度"]}</td>
+                    <td>${weather_info["天气"]}</td>
+                    <td>${weather_info["风力"]}</td>
+                    <td>${weather_info["风向"]}</td>
+                </tr>
+                <tr class="warning">
+                    <td colspan="5">预警：</td>
+                </tr>
+                %for i in weather_info["预警"]:
+                    <tr class="warning">
+                        <td colspan="5">${weather_info["预警"][i]}</td>
+                    </tr>
+                %endfor
+            </table>
+        </div>
+    %endif
+
+    <div class="table-responsive">
+        <h3>24小时实时天气预报
+        </h3>
+        <table class="table">
+            <tr class="active">
+                <th>${ town }</th>
+                % for h in hour:
+                    <th>${ h }时</th>
+                % endfor
+            </tr>
+            <tr class="success">
+                <th>温度</th>
+                % for t in temp :
+            % if t != "":
+                            <td>${ t }℃</td>
+                    % endif
+                % endfor
+            </tr>
+            <tr class="danger">
+                <th>降水</th>
+                % for r in rain:
+                    %if r != "":
+                        <td>${ r }mm</td>
+                    % endif
+                % endfor
+            </tr>
+            <tr class="success">
+                <th>湿度</th>
+                % for d in humidity:
+                    %if d != "":
+                        <td>${ d }%</td>
+                    % endif
+                % endfor
+            </tr>
+            <tr class="danger">
+                <th>风向</th>
+                % for wt in wind_type :
+                    % if wt != "":
+                        <td>${ wt }</td>
+                    % endif
+                % endfor
+            </tr>
+            <tr class="success">
+                <th>风力</th>
+                % for wl in wind_level :
+                    % if wl != "":
+                        <td>${ wl }级</td>
+                    % endif
+                % endfor
+            </tr>
+        </table>
+    </div>
+</div>

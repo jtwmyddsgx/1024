@@ -1,0 +1,40 @@
+<%inherit file="base.html" />
+
+<%block name="head">
+</%block>
+
+<div class="container">
+    <div class="page-header">
+		<h1>获得详细位置 <small>所在位置:${site["province"]}省${site["city"]}市 </small></h1>
+	</div>
+    <div class="table-responsive" >
+        <table class="table">
+            <tr>
+            % for t in town:
+                <td>
+                    <input class="btn btn-success" id="${town[t]}" type="button" name="get_town" onclick="town(this)" value="${t}" >
+                </td>
+            %endfor
+            </tr>
+        </table>
+    </div>
+</div>
+<%block name="script">
+	 <script type="text/javascript">
+		function town(thistown){
+					var myForm = document.createElement("form");
+                    myForm.method = "post";
+                    myForm.action = "weather";
+
+                    var townInput = document.createElement("input")
+                    townInput.type = "text";
+                    townInput.name = "town_id";
+                    townInput.value = thistown.id;
+
+                    myForm.appendChild(townInput);
+                    document.body.appendChild(myForm);
+                    myForm.submit();
+                    document.body.removeChild(myForm);
+		}
+	 </script>
+</%block>

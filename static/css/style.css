@@ -1,0 +1,24 @@
+form div.row{
+	margin-bottom:10px;
+}
+
+td.words{
+    word-break:break-all;
+    width:500px;
+}
+
+li h4{
+    color:#009900
+}
+
+p {
+    word-break:break-all;
+}
+
+body{
+    padding-top:50px;
+}
+
+* {
+    font-family: Arial,"Hiragino Sans GB",¶¬ÇàºÚ,"Microsoft YaHei",Î¢ÈíÑÅºÚ,SimSun,ËÎÌå,Helvetica,Tahoma,"Arial sans-serif";
+}

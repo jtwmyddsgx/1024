@@ -1,0 +1,154 @@
+<%inherit file="../base.html"/>
+<div class="container">
+    <div class="page-header">
+		<h1>管理员.<small>${time}</small></h1>
+	</div>
+    <div>
+		<ol class="breadcrumb">
+		  <li><a href="/">首页</a></li>
+		  <li class="active"><a href="#">管理</a></li>
+		</ol>
+	</div>
+    % if article != {}:
+        % if article["page_count"] != 0:
+            %for i in article["items"]:
+                <div class="jumbotron">
+                  <div id='content' class='row-fluid'>
+                    <h2>${i.header|h}</h2>
+                    <p class="blog-post-meta">${i.publish_time|h}<a href="#"> by ${i.username|h}</a></p>
+                    <p>${i.describe|h}</p>
+                    <p>
+                        % if i.checked == -1:
+                        <a class="btn btn-danger" role="button" href="/checked/${i.key|h}">通过审核 &raquo;</a>
+                        % elif i.checked == 1:
+                        <a class="btn btn-warning" role="button" href="/checked/${i.key|h}">禁止 &raquo;</a>
+                        %endif
+                        <a class="btn btn-primary" role="button" id="${i.key|h}" onclick="if(confirm('确认删除？')){removeArticle('/manager/article',this)}">删除 &raquo;</a>
+                        <a class="btn btn-primary" role="button" href="/spider/${i.key|h}">阅读全文 &raquo;</a>
+                        </p>
+                  </div>
+                </div>
+            %endfor
+            <nav style="text-align:center;">
+                    <ul class="pagination">
+                        %if article["first_page"] is not None:
+                            <li>
+                                <a href="?cur_page=${article["first_page"]}">${article["first_page"]}</a>
+                            </li>
+                        %endif
+                        %if article["prev_page"] is not None:
+                            <li>
+                                <a href="?cur_page=${article["prev_page"]}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        %else:
+                            <li class="disabled">
+                                <a href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        % endif
+
+                        %for i in article["page_numbers"]:
+                            %if i == article["cur_page"]:
+                                <li class="active"><a href="?cur_page=${i}">${i}</a></li>
+                            %else:
+                                <li><a href="?cur_page=${i}">${i}</a></li>
+                            %endif
+                        %endfor
+                        % if article["next_page"] is not None:
+                            <li>
+                                <a href="?cur_page=${article["next_page"]}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        %else:
+                            <li class="disabled">
+                                <a href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        %endif
+                        %if article["last_page"] is not None:
+                            <li>
+                                <a href="?cur_page=${article["last_page"]}">${article["last_page"]}</a>
+                            </li>
+                        %endif
+                    </ul>
+            </nav>
+        %endif
+    %endif
+    %if users != {}:
+    <div class="jumbotron">
+        <table class="table">
+            <tr>
+                <th>id</th><td>用户名</td><td></td><td></td>
+            </tr>
+            %for i in users["items"]:
+                <tr>
+                    <td>${i.id}</td><td>${i.username|h}</td>
+                    %if i.level == 0:
+                        <td><a class="btn btn-danger" role="button" href="/user/manager/1/${i.key}">解禁 &raquo;</a></td>
+                    % elif i.level == 10:
+                        <td><a class="btn btn-warning" role="button" href="/user/manager/0/${i.key}">进黑名单 &raquo;</a></td>
+                        <td><a class="btn btn-success" role="button" href="/user/manager/2/${i.key}">设管理员 &raquo;</a></td>
+                    % elif i.level == 100:
+                        <td><a class="btn btn-warning" role="button" href="/user/manager/0/${i.key}">进黑名单 &raquo;</a></td>
+                        <td><a class="btn btn-warning" role="button" href="/user/manager/1/${i.key}">降为普通用户 &raquo;</a></td>
+                    %endif
+                </tr>
+            %endfor
+        </table>
+        <nav style="text-align:center;">
+                <ul class="pagination">
+                    %if users["first_page"] is not None:
+                        <li>
+                            <a href="?cur_page=${users["first_page"]}">${users["first_page"]}</a>
+                        </li>
+                    %endif
+                    %if users["prev_page"] is not None:
+                        <li>
+                            <a href="?cur_page=${users["prev_page"]}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    %else:
+                        <li class="disabled">
+                            <a href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    % endif
+            
+                    %for i in users["page_numbers"]:
+                        %if i == users["cur_page"]:
+                            <li class="active"><a href="?cur_page=${i}">${i}</a></li>
+                        %else:
+                            <li><a href="?cur_page=${i}">${i}</a></li>
+                        %endif
+                    %endfor
+                    % if users["next_page"] is not None:
+                        <li>
+                            <a href="?cur_page=${users["next_page"]}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    %else:
+                        <li class="disabled">
+                            <a href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    %endif
+                    %if users["last_page"] is not None:
+                        <li>
+                            <a href="?cur_page=${users["last_page"]}">${users["last_page"]}</a>
+                        </li>
+                    %endif
+                </ul>
+		</nav>
+    %endif
+    </div>
+    </div>
+

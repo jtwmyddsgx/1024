@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<%
+	user = req.current_user()
+	messages = get_messages()
+%>
+<html>
+<head>
+    % if page_title:
+    <title>${page_title|h}</title>
+    % else:
+    <title>${config.TITLE|h}</title>
+    % endif
+	<meta charset='utf-8'>
+    <link rel = "Shortcut Icon" href="/favicon.ico">
+	<script src="${static('js/main.js')}"></script>
+	<script src="${static('js/jquery.js')}"></script>
+	<script src="${static('bootstrap/js/bootstrap.min.js')}"></script>
+	<link href="${static('bootstrap/css/bootstrap.min.css')}" rel="stylesheet" />
+	<link href="${static('css/style.css')}" rel="stylesheet" />
+	<%block name="head" />
+</head>
+<body>
+	<nav class="navbar navbar-fixed-top" role="navigation">
+          <div class="container">
+              <ul class="nav nav-pills pull-right ">
+                  <li><a href="${url_for('index')}"><img src="${static('img/header.png')}"></a></li>
+                  <li role="presentation" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span>&nbsp;实例&nbsp;<span class="caret"></span></h5></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="${url_for('weather')}"><span class="glyphicon glyphicon-cloud" aria-hidden="true"></span>&nbsp;天气</a></li>
+                      <li><a href="${url_for('proxy')}"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span>&nbsp;代理</a></li>
+                      <!-- <li><a href="${url_for('edu')}"><span class="glyphicon glyphicon-book" aria-hidden="true"></span>&nbsp;日常课表</a></li> -->
+                    </ul>
+                  </li>
+                  % if user:
+                      <li role="presentation" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;${user.username|h}&nbsp;<span class="caret"></span></h5></a>
+                          <ul class="dropdown-menu">
+                              % if user.level == 100:
+                                  <li><a href="/manager/admin/1"><span class="glyphicon glyphicon-book" aria-hidden="true"></span>&nbsp;文章管理</a></li>
+                                  <li><a href="/manager/admin/2"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span>&nbsp;用户管理</a></li>
+                              % endif
+                              <li><a href="/user/personal/manager/1"><span class="glyphicon glyphicon-book" aria-hidden="true"></span>&nbsp;文章管理</a></li>
+                              <li><a href="/user/personal/manager/2"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span>&nbsp;评论管理</a></li>
+                              <li><a href="${url_for('publish')}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;发表文章</a></li>
+                              <li><a href="#" data-toggle="modal" data-target="#myAlert"><span class="glyphicon glyphicon-flash" aria-hidden="true"></span>&nbsp;修改密码</a></li>
+                              <li><a href="/signout?next=${req.request.uri}"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;注销</a></li>
+                          </ul>
+                      </li>
+                  % else:
+                      <li><a href="#" data-toggle="modal" data-target="#mySignin"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;登录</a></li>
+                      <li><a  href="#" data-toggle="modal" data-target="#mySignup"><span class="glyphicon glyphicon glyphicon-import" aria-hidden="true"></span>&nbsp;注册</a></li>
+                  % endif
+                  <li><a href="${url_for('board')}"><span class="glyphicon glyphicon-phone" aria-hidden="true"></span>&nbsp;联系站长</a></li>
+              </ul>
+          </div>
+	</nav>
+<!-- Modal -->
+<div class="modal fade" id="mySignin" tabindex="-1" role="dialog" aria-labelledby="mySignin">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="mySigninLabel">登录</h4>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="/signin">
+          <div class="form-group">
+            <table>
+              <tr>
+                <td><label style="margin:5px" for="username" class="control-label">用户名:</label></td>
+                <td><input style="margin:5px;margin-left:30px;" type="text" class="form-control" name="username"></td>
+              </tr>
+              <tr>
+                <td><label style="margin:5px;" for="pwd" class="control-label">密码:</label></td>
+                <td><input style="margin:5px;margin-left:30px;" type="password" class="form-control" name="pwd"></td>
+              </tr>
+              <tr>
+                <td><input style="margin:5px;" type="hidden" value="${req.request.uri}" name="next" ></td>
+                <td><label style="margin:5px;margin-left:30px;" for="remember"><input name="remember" type="checkbox" checked>记住密码</label></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td><button style="margin:5px;margin-left:30px;" type="button" class="btn btn-default" data-dismiss="modal">Close</button><button type="submit" class="btn btn-primary">登录</button></td>
+              </tr>
+            </table>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="mySignup" tabindex="-1" role="dialog" aria-labelledby="mySignup">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="mySignupLabel">注册</h4>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="/signup">
+          <div class="form-group">
+            <table>
+              <tr>
+                <td><label  style="margin:5px" for="username" class="control-label">用户名:</label></td>
+                <td><input  style="margin:5px" type="text" class="form-control" name="username" id="SignupName" onblur="JudgeUserName(this.value)"></td>
+                <td><a  style="margin:5px" class="control-label" id="showUserResult"></a></td>
+              </tr>
+              <tr>
+                <td><label  style="margin:5px" for="pwd1" class="control-label">密码:</label></td>
+                <td><input  style="margin:5px" type="password" class="form-control" id="SignupPass1" name="pwd1"></td>
+                <td><a  style="margin:5px" class="control-label" id="showPassResult1"></a></td>
+              </tr>
+              <tr>
+			    <td><label  style="margin:5px" for="pwd2" class="control-label">确认密码:</label></td>
+                <td><input  style="margin:5px" type="password" class="form-control" id="SignupPass2" name="pwd2" onblur="JudgePassWord(this.value)"></td>
+                <td><a  style="margin:5px" class="control-label" id="showPassResult2"></a></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td><button style="margin:5px" type="button" class="btn btn-default" data-dismiss="modal">Close</button><button type="submit" class="btn btn-primary">注册</button></td>
+                <td></td>
+              </tr>
+            </table>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="myAlert" tabindex="-1" role="dialog" aria-labelledby="myAlert">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myAlertLabel">登录</h4>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="/alertpass">
+          <div class="form-group">
+            <table>
+              <tr>
+                <td><label style="margin:5px" for="password1" class="control-label">新密码:</label></td>
+                <td><input style="margin:5px" type="password" class="form-control" id="AlertPass1" name="password1"></td>
+                <td><a style="margin:5px" class="control-label" id="showAlertResult1"></a></td>
+              </tr>
+              <tr>
+                <td><label style="margin:5px"  for="password2" class="control-label">确认密码:</label></td>
+                <td><input style="margin:5px" type="password" class="form-control" id="AlertPass2" name="password2" onkeyup="JudgeAlertPass(this.value)" onmouseout="JudgeAlertPass(this.value)"><input type="hidden" value="${req.request.uri}" name="next" ></td>
+                <td><a style="margin:5px" class="control-label" id="showAlertResult2"></a></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td><button style="margin:5px" type="button" class="btn btn-default" data-dismiss="modal">Close</button><button style="margin:5px" type="submit" class="btn btn-primary">确认修改</button></td>
+                <td></td>
+              </tr>
+            </table>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+	% if messages:
+		% for msg in messages :
+			% if msg.tag == 'success' :
+				<a style="margin:10px" tabindex="0" id="message" role="button" data-toggle="popover" data-trigger="focus" title="" data-content="${msg.txt}"></a>
+			% elif msg.tag == 'error' :
+				<a tabindex="0" id="message" role="button" data-toggle="popover" data-trigger="focus" title="" data-content="${msg.txt}"></a>
+			% endif
+		% endfor
+	% endif
+${self.body()}
+<%block name="script" />
+</body>
+<script type="text/javascript">
+		$(function () {
+		  $('[data-toggle="popover"]').popover()
+		})
+		$('#message').popover('show')
+		function change_verify_code(){
+			document.getElementById("verify_code").src="/verifycode?k="+Math.random();
+		}
+
+		function JudgeUserName(name)
+        {
+        if(name){
+            $.ajax({
+            type:"GET",
+            url:"/exist",
+            dataType:"html",
+            data:"username="+$("#SignupName").val(),
+            beforeSend:function(XMLHttpRequest)
+                {
+                    $("#showResult").text("正在检验用户名是否存在");
+                    //Pause(this,100000);
+                },
+            success:function(msg)
+                {
+                    $("#showUserResult").text(msg);
+                    if(msg=="该用户可用."){
+                        $("#showUserResult").css("color","green");
+                    }
+                    else{
+                    $("#showUserResult").css("color","red");
+                    }
+                },
+           complete:function(XMLHttpRequest,textStatus)
+                {
+                    //隐藏正在查询图片
+                },
+          error:function()
+               {
+                    //错误处理
+               }
+            });
+        }
+        else{
+          $("#showResult").text("");
+        }
+        }
+
+        function JudgeAlertPass(password)
+        {
+        if(password){
+                  error = false;
+                  pwd1 = $("#AlertPass1").val();
+                  pwd2 = $("#AlertPass2").val();
+                  if(pwd1.length <= 3 || pwd1.length > 51){
+                    $("#showAlertResult1").text("密码长度必须大于3小于50！");
+                    $("#showAlertResult1").css("color","red");
+                    error = true;
+                  }
+                  if(pwd2.length <= 3 || pwd2.length > 51){
+                    $("#showAlertResult2").text("密码长度必须大于3小于50！");
+                    $("#showAlertResult2").css("color","red");
+                    error = true;
+                  }
+                  if(pwd1 != pwd2){
+                    $("#showAlertResult2").text("两次输入的密码不一致");
+                    $("#showAlertResult2").css("color","red");
+                    error = true;
+                  }
+                  if(error == false){
+                    $("#showAlertResult1").text("");
+                    $("#showAlertResult2").text("");
+                  }
+        }
+        else{
+          $("#showAlertResult2").text("");
+        }
+        }
+
+
+        function JudgePassWord(password)
+        {
+        if(password){
+                  error = false;
+                  pwd1 = $("#SignupPass1").val();
+                  pwd2 = $("#SignupPass2").val();
+                  if(pwd1.length <= 3 || pwd1.length > 51){
+                    $("#showPassResult1").text("密码长度必须大于3小于50！");
+                    $("#showPassResult1").css("color","red");
+                    error = true;
+                  }
+                  if(pwd2.length <= 3 || pwd2.length > 51){
+                    $("#showPassResult2").text("密码长度必须大于3小于50！");
+                    $("#showPassResult2").css("color","red");
+                    error = true;
+                  }
+                  if(pwd1 != pwd2){
+                    $("#showPassResult2").text("两次输入的密码不一致");
+                    $("#showPassResult2").css("color","red");
+                    error = true;
+                  }
+                  if(error == false){
+                    $("#showPassResult1").text("");
+                    $("#showPassResult2").text("");
+                  }
+        }
+        else{
+          $("#showPassResult2").text("");
+        }
+        }
+
+</script>
+</html>
