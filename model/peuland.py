@@ -80,9 +80,15 @@ class PeulandProxy(object):
         pool.join()
 
         proxy_pool_path = path.join(path.dirname(path.abspath(__file__)), '../static/proxy_pool.txt')
+        proxy_path = path.join(path.dirname(path.abspath(__file__)), '../static/proxy.txt')
         with open(proxy_pool_path, "a") as t:
             for i in self.checked_proxies:
                 t.write(json.dumps(i) + "\n")
+        with open(proxy_path, "a") as t:
+            for i in self.checked_proxies:
+                key = set(i).pop()
+                value = i.get(key)
+                t.write(value+"@"+key+"\n")
 
         #return self.checked_proxies
 
