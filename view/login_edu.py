@@ -113,8 +113,8 @@ class LoginEdu(View):
                 viewstate = page.xpath("//input[@name='__VIEWSTATE']")[0].get("value")
 
                 # 登陆时所用的账号密码以及验证码
-                login_data = {'__VIEWSTATE': viewstate, 'txtUserName': '119052013028',
-                              'TextBox2': 'you22056284f', 'txtSecretCode': yzm,
+                login_data = {'__VIEWSTATE': viewstate, 'txtUserName': 'username',
+                              'TextBox2': 'password', 'txtSecretCode': yzm,
                               'RadioButtonList1': '%D1%A7%C9%FA',
                               'Button1': '', 'hidPdrs': '', 'hidsc': '', 'lbLanguage': ''}
 
